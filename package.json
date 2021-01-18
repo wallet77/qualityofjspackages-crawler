@@ -1,0 +1,39 @@
+{
+  "name": "npm-packages-quality-analysis",
+  "version": "1.0.0",
+  "description": "Get most downloaded npm packages and run quality analysis",
+  "main": "index.js",
+  "bin": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    "require": "./index.js",
+    "import": "./index.js"
+  },
+  "files": [
+    "src/**"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wallet77/npm-packages-quality-analysis.git"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Vincent Vallet",
+    "email": "wallet77@gmail.com",
+    "url": "https://github.com/wallet77"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wallet77/npm-packages-quality-analysis/issues"
+  },
+  "homepage": "https://github.com/wallet77/npm-packages-quality-analysis#readme",
+  "dependencies": {
+    "axios": "0.21.1"
+  }
+}
