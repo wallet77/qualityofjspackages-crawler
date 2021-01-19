@@ -1,0 +1,10 @@
+{
+  "extends": "standard",
+  "env": {
+    "jest": true
+  },
+  "ignorePatterns": ["tests/resources/**/*.js"],
+  "rules": {
+    "indent": ["error", 4]
+  }
+}
