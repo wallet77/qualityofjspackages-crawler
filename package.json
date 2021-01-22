@@ -35,7 +35,11 @@
   },
   "homepage": "https://github.com/wallet77/npm-packages-quality-analysis#readme",
   "dependencies": {
-    "axios": "0.21.1"
+    "axios": "0.21.1",
+    "mongodb": "3.6.3",
+    "pino": "6.11.0",
+    "qualscan": "2.4.1",
+    "uuid": "8.3.2"
   },
   "devDependencies": {
     "eslint": "^7.17.0",
