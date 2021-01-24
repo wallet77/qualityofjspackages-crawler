@@ -7,20 +7,39 @@ const store = require('./src/store')
 const { v4: uuidv4 } = require('uuid')
 const fs = require('fs')
 
-const cloneRepo = async (repository) => {
-    logger.info(`Cloning ${repository}`)
+const execCommand = (cmd, options) => {
     return new Promise((resolve, reject) => {
-        childProcess.exec(`git clone ${repository}`, {
-            cwd: path.join(process.cwd(), 'repos')
-        }, (err, stdout) => {
-            const msg = `Clone ${repository}`
+        childProcess.exec(cmd, options, (err, stdout) => {
             if (err) {
-                logger.error(`${msg} => error`)
                 return reject(err)
             }
             return resolve(stdout)
         })
     })
+}
+
+const cloneRepo = async (repository) => {
+    logger.info(`Cloning ${repository}`)
+    const msg = `Clone ${repository}`
+    try {
+        await execCommand(`git clone ${repository}`, {
+            cwd: path.join(process.cwd(), 'repos')
+        })
+    } catch (err) {
+        logger.error(`${msg} => error`)
+        logger.error(err)
+    }
+}
+
+const installDep = async (packagePath) => {
+    logger.info('Installing dependencies ...')
+    try {
+        await execCommand('npm install', {
+            cwd: path.join(process.cwd(), 'repos', packagePath)
+        })
+    } catch (err) {
+        logger.error(err)
+    }
 }
 
 const runQualscan = async (packagePath) => {
@@ -130,10 +149,17 @@ const run = async () => {
                 logger.info(`${repository} is already cloned!`)
             }
 
+            const repoPath = path.join(repoName, repositoryDirectory)
+
+            // -----------------------------
+            // Install dependencies
+            // -----------------------------
+            await installDep(repoPath)
+
             // -----------------------------
             // QUALSCAN
             // -----------------------------
-            const report = await runQualscan(path.join(repoName, repositoryDirectory))
+            const report = await runQualscan(repoPath)
             currentPackage.qualscan = JSON.stringify(report)
         } catch (err) {
             logger.error(err)
