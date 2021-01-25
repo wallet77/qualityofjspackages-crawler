@@ -38,7 +38,7 @@
     "axios": "0.21.1",
     "mongodb": "3.6.3",
     "pino": "6.11.0",
-    "qualscan": "2.4.1",
+    "qualscan": "2.5.0",
     "uuid": "8.3.2"
   },
   "devDependencies": {
