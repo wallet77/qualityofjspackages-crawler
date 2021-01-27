@@ -38,7 +38,7 @@ const installDep = async (packagePath) => {
             cwd: path.join(process.cwd(), 'repos', packagePath)
         })
     } catch (err) {
-        logger.error(err)
+        throw err
     }
 }
 
@@ -100,6 +100,7 @@ const run = async () => {
     let nbPackageAlreadyDone = 0
 
     for (const name in allPackages) {
+        const time = process.hrtime()
         const currentPackage = allPackages[name]
         try {
             // -----------------------------
@@ -164,6 +165,8 @@ const run = async () => {
         } catch (err) {
             logger.error(err)
         }
+        const diff = process.hrtime(time)
+        currentPackage.time = diff[0] * 1e9 + diff[1]
         nbPackageAlreadyDone++
         logger.info(`${Math.round(nbPackageAlreadyDone * 100 / nbPackages)}%`)
     }
