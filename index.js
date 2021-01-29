@@ -88,7 +88,6 @@ const run = async () => {
             )
 
             allPackages[name] = {
-                reportId: id,
                 name,
                 rank,
                 qualscan: {}
@@ -130,11 +129,7 @@ const run = async () => {
             // NPMS
             // -----------------------------
             const npmsRes = await axios.get(`https://api.npms.io/v2/package/${encodeURIComponent(name)}`)
-
-            currentPackage.npms = {
-                final: npmsRes.data.score.final,
-                quality: npmsRes.data.score.detail.quality
-            }
+            currentPackage.npms = npmsRes.data.score
 
             // -----------------------------
             // CLONE REPO
@@ -175,7 +170,11 @@ const run = async () => {
     // STORE REPORT
     // -----------------------------
     logger.info('Saving report ...')
-    await store.save(allPackages)
+    await store.save({
+        id: id,
+        time: new Date().getTime(),
+        packages: allPackages
+    })
     logger.info('Report saved!')
 }
 
