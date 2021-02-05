@@ -1,0 +1,7 @@
+{
+    "require-time": {
+        "budget": {
+            "fail": { "entrypointTime": 150000000 }
+        }
+    }
+}

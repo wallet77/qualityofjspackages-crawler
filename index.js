@@ -33,13 +33,9 @@ const cloneRepo = async (repository) => {
 
 const installDep = async (packagePath) => {
     logger.info('Installing dependencies ...')
-    try {
-        await execCommand('npm install', {
-            cwd: path.join(process.cwd(), 'repos', packagePath)
-        })
-    } catch (err) {
-        throw err
-    }
+    await execCommand('npm install', {
+        cwd: path.join(process.cwd(), 'repos', packagePath)
+    })
 }
 
 const runQualscan = async (packagePath) => {
