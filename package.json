@@ -22,7 +22,13 @@
     "type": "git",
     "url": "https://github.com/wallet77/npm-packages-quality-analysis"
   },
-  "keywords": ["npm", "packages", "quality", "scanner", "report"],
+  "keywords": [
+    "npm",
+    "packages",
+    "quality",
+    "scanner",
+    "report"
+  ],
   "author": {
     "name": "Vincent Vallet",
     "email": "wallet77@gmail.com",
@@ -36,7 +42,7 @@
   "dependencies": {
     "axios": "0.21.1",
     "pino": "6.11.0",
-    "qualscan": "2.5.2",
+    "qualscan": "2.6.0",
     "uuid": "8.3.2"
   },
   "devDependencies": {
