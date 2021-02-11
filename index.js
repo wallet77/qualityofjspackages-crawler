@@ -125,8 +125,10 @@ const run = async () => {
             // NPMS
             // -----------------------------
             const npmsRes = await axios.get(`https://api.npms.io/v2/package/${encodeURIComponent(name)}`)
-            currentPackage.npms = npmsRes.data.score
-
+            currentPackage.npms = {
+                score: npmsRes.data.score,
+                evaluation: npmsRes.data.evaluation
+            }
             // -----------------------------
             // CLONE REPO
             // -----------------------------
