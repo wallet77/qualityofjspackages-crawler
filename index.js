@@ -1,66 +1,15 @@
 const axios = require('axios')
 const logger = require('pino')()
-const childProcess = require('child_process')
 const path = require('path')
-const qualscan = require('qualscan')
 const store = require('./src/store')
 const { v4: uuidv4 } = require('uuid')
-const fs = require('fs')
+const utils = require('./src/utils')
 
-const execCommand = (cmd, options) => {
-    return new Promise((resolve, reject) => {
-        childProcess.exec(cmd, options, (err, stdout) => {
-            if (err) {
-                return reject(err)
-            }
-            return resolve(stdout)
-        })
-    })
-}
-
-const cloneRepo = async (repository) => {
-    logger.info(`Cloning ${repository}`)
-    const msg = `Clone ${repository}`
-    try {
-        await execCommand(`git clone ${repository}`, {
-            cwd: path.join(process.cwd(), 'repos')
-        })
-    } catch (err) {
-        logger.error(`${msg} => error`)
-        logger.error(err)
-    }
-}
-
-const installDep = async (packagePath) => {
-    logger.info('Installing dependencies ...')
-    await execCommand('npm install', {
-        cwd: path.join(process.cwd(), 'repos', packagePath)
-    })
-}
-
-const runQualscan = async (packagePath) => {
-    logger.info(`Scanning ${packagePath}`)
-    return await qualscan.run({
-        reporters: ['json'],
-        reportPath: '',
-        scripts: []
-    }, path.join(process.cwd(), 'repos', packagePath))
-}
-
-const preRun = async () => {
-    try {
-        logger.info('Deleting repos folder ...')
-        await fs.promises.rmdir(path.join(process.cwd(), 'repos'), { recursive: true })
-        logger.info('Creating repos folder ...')
-        await fs.promises.mkdir(path.join(process.cwd(), 'repos'))
-    } catch (err) {
-        logger.error(err)
-        process.exit(1)
-    }
-}
-
+/**
+ * Entrypoint
+ */
 const run = async () => {
-    await preRun()
+    await utils.preRun()
     const id = uuidv4()
     const res = await axios.get('https://gist.githubusercontent.com/anvaka/8e8fa57c7ee1350e3491/raw/b6f3ebeb34c53775eea00b489a0cea2edd9ee49c/01.most-dependent-upon.md')
     const packages = res.data.split('\n')
@@ -137,7 +86,7 @@ const run = async () => {
             // usefull when we get sub packages of a bigger project
             // example: react-dom for react
             if (reposAlreadyCloned.indexOf(repository) === -1) {
-                await cloneRepo(repository)
+                await utils.cloneRepo(repository)
                 reposAlreadyCloned.push(repository)
             } else {
                 logger.info(`${repository} is already cloned!`)
@@ -148,12 +97,13 @@ const run = async () => {
             // -----------------------------
             // Install dependencies
             // -----------------------------
-            await installDep(repoPath)
+            const installRes = await utils.installDep(repoPath)
+            currentPackage.consumption = installRes
 
             // -----------------------------
             // QUALSCAN
             // -----------------------------
-            const report = await runQualscan(repoPath)
+            const report = await utils.runQualscan(repoPath)
             currentPackage.qualscan = JSON.stringify(report)
         } catch (err) {
             logger.error(err)

@@ -15,8 +15,6 @@ RUN npm install --production --prefix /home/node/app && npm cache clean --force
 
 RUN git --version && npm -v && node -v
 
-COPY . .
-
 USER node
 
 CMD [ "dumb-init", "node", "index.js" ]
