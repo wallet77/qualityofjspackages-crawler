@@ -10,6 +10,8 @@ const utils = require('./src/utils')
  */
 const run = async () => {
     await utils.preRun()
+
+    const globalTime = process.hrtime()
     const id = uuidv4()
     const res = await axios.get('https://gist.githubusercontent.com/anvaka/8e8fa57c7ee1350e3491/raw/b6f3ebeb34c53775eea00b489a0cea2edd9ee49c/01.most-dependent-upon.md')
     const packages = res.data.split('\n')
@@ -114,6 +116,7 @@ const run = async () => {
         logger.info(`${Math.round(nbPackageAlreadyDone * 100 / nbPackages)}%`)
     }
 
+    const diff = process.hrtime(globalTime)
     // -----------------------------
     // STORE REPORT
     // -----------------------------
@@ -121,6 +124,7 @@ const run = async () => {
     await store.save({
         id: id,
         time: new Date().getTime(),
+        duration: diff[0] * 1e9 + diff[1],
         packages: allPackages
     })
     logger.info('Report saved!')
