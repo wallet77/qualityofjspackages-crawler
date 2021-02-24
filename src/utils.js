@@ -40,8 +40,7 @@ const cloneRepo = async (repository) => {
 const startComputeEnergicalComsuption = (packagePath) => {
     const child = spawn(`${process.env.SCAPHANDRE_BIN}`, ['json', '-t 60', '--step 0', '--step_nano 500000000', '--file report.json'], {
         cwd: path.join(process.cwd(), 'repos', packagePath),
-        shell: true,
-        timeout: 60000
+        shell: true
     })
 
     return child
@@ -49,7 +48,7 @@ const startComputeEnergicalComsuption = (packagePath) => {
 
 const stopComputeEnergicalComsuption = (packagePath, child, PID) => {
     return new Promise((resolve) => {
-        child.on('close', () => {
+        child.on('exit', () => {
             logger.info('Reading electrical data ...')
             fs.readFile(path.join(process.cwd(), 'repos', packagePath, 'report.json'), (err, rawdata) => {
                 if (err) logger.error(err)
