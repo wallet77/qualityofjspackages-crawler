@@ -41,15 +41,15 @@
   "homepage": "https://github.com/wallet77/npm-packages-quality-analysis#readme",
   "dependencies": {
     "axios": "0.21.1",
-    "pino": "6.11.0",
+    "pino": "6.11.1",
     "qualscan": "2.7.0",
     "uuid": "8.3.2"
   },
   "devDependencies": {
-    "eslint": "^7.17.0",
+    "eslint": "^7.20.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1"
+    "eslint-plugin-promise": "^4.3.1"
   }
 }
