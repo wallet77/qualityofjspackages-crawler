@@ -1,4 +1,9 @@
 {
+    "dependencies-size": {
+        "budget": {
+            "fail": { "weight": 200000000, "dependencies": "unlimited", "directDependencies": 15 }
+        }
+    },
     "require-time": {
         "budget": {
             "fail": { "entrypointTime": "unlimited" }
