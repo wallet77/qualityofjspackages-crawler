@@ -1,4 +1,4 @@
-# Npm packages quality analyzer
+# Quality of JS packages - crawler
 
 ## Project setup
 ```
