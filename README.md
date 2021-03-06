@@ -1,5 +1,19 @@
 # Quality of JS packages - crawler
 
+## Purpose
+
+This project aims to crawl the top most famous Javascript packages and run some analysis on them.  
+Here is the current workflow:
+- download the list of the most dependend packages
+- for each of them
+    * request npm registry to retrieve global information
+    * git clone the project from github
+    * run [scaphandre](https://github.com/hubblo-org/scaphandre)
+    * install dependencies
+    * stop scaphandre
+    * run [Qualscan](https://github.com/wallet77/qualscan)
+    * request [npms.io](https://www.npms.io) to get more data
+
 ## Project setup
 ```
 npm install
