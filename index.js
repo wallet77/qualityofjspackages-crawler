@@ -1,6 +1,7 @@
 const axios = require('axios')
 const logger = require('pino')()
 const path = require('path')
+const os = require('os')
 const store = require('./src/store')
 const { v4: uuidv4 } = require('uuid')
 const utils = require('./src/utils')
@@ -18,7 +19,7 @@ const run = async () => {
     const allPackages = {}
     const reposAlreadyCloned = []
 
-    const max = 50 // packages.length
+    const max = 108 // packages.length
     // extract packages list
     for (let i = 0; i < max; i++) {
         const npmPackage = packages[i]
@@ -125,7 +126,24 @@ const run = async () => {
         id: id,
         time: new Date().getTime(),
         duration: diff[0] * 1e9 + diff[1],
-        packages: allPackages
+        packages: allPackages,
+        machine: {
+            cpu: {
+                number: os.cpus().length,
+                type: {
+                    model: os.cpus()[0].model,
+                    speed: os.cpus()[0].speed
+                }
+            },
+            os: {
+                platform: os.platform(),
+                release: os.release(),
+                version: os.version()
+            },
+            memory: {
+                total: os.totalmem()
+            }
+        }
     })
     logger.info('Report saved!')
 }
