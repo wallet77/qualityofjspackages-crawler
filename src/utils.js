@@ -21,6 +21,10 @@ const execCommand = (cmd, options) => {
             }
             return resolve({ data: stdout, pid: child.pid })
         })
+        child.on('error', (err) => {
+            logger.error(`Error when executing ${cmd}`)
+            logger.error(err)
+        })
     })
 }
 
@@ -43,10 +47,15 @@ const startComputeEnergicalComsuption = (packagePath) => {
         shell: true
     })
 
+    child.on('error', (err) => {
+        logger.error('Start scaphandre')
+        logger.error(err)
+    })
     return child
 }
 
 const stopComputeEnergicalComsuption = (packagePath, child, PID) => {
+    if (!child) return
     return new Promise((resolve) => {
         child.on('exit', () => {
             logger.info('Reading electrical data ...')
