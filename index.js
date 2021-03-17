@@ -45,6 +45,7 @@ const run = async () => {
 
     const nbPackages = Object.keys(allPackages).length
     let nbPackageAlreadyDone = 0
+    const skippedPackages = {}
 
     for (const name in allPackages) {
         const time = process.hrtime()
@@ -109,12 +110,18 @@ const run = async () => {
             const report = await utils.runQualscan(repoPath)
             currentPackage.qualscan = JSON.stringify(report)
         } catch (err) {
-            logger.error(err)
+            skippedPackages[name] = err
         }
         const diff = process.hrtime(time)
         currentPackage.time = diff[0] * 1e9 + diff[1]
         nbPackageAlreadyDone++
         logger.info(`${Math.round(nbPackageAlreadyDone * 100 / nbPackages)}%`)
+    }
+
+    const packagesInError = Object.keys(skippedPackages)
+    if (packagesInError.length > 0) {
+        logger.error(`${packagesInError.length} packages skipped due to errors.`)
+        logger.error(Object.keys(skippedPackages).join('\n'))
     }
 
     const diff = process.hrtime(globalTime)
@@ -143,7 +150,8 @@ const run = async () => {
             memory: {
                 total: os.totalmem()
             }
-        }
+        },
+        skippedPackages
     })
     logger.info('Report saved!')
 }

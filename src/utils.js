@@ -23,35 +23,31 @@ const execCommand = (cmd, options) => {
         })
         child.on('error', (err) => {
             logger.error(`Error when executing ${cmd}`)
-            logger.error(err)
+            reject(err)
         })
     })
 }
 
-const cloneRepo = async (repository) => {
+const cloneRepo = (repository) => {
     logger.info(`Cloning ${repository}`)
-    const msg = `Clone ${repository}`
-    try {
-        await execCommand(`git clone ${repository}`, {
-            cwd: path.join(process.cwd(), 'repos')
-        })
-    } catch (err) {
-        logger.error(`${msg} => error`)
-        logger.error(err)
-    }
+    return execCommand(`git clone ${repository}`, {
+        cwd: path.join(process.cwd(), 'repos')
+    })
 }
 
 const startComputeEnergicalComsuption = (packagePath) => {
-    const child = spawn(`${process.env.SCAPHANDRE_BIN}`, ['json', '-t 60', '--step 0', '--step_nano 500000000', '--file report.json'], {
-        cwd: path.join(process.cwd(), 'repos', packagePath),
-        shell: true
-    })
+    return new Promise((resolve, reject) => {
+        const child = spawn(`${process.env.SCAPHANDRE_BIN}`, ['json', '-t 60', '--step 0', '--step_nano 500000000', '--file report.json'], {
+            cwd: path.join(process.cwd(), 'repos', packagePath),
+            shell: true
+        })
 
-    child.on('error', (err) => {
-        logger.error('Start scaphandre')
-        logger.error(err)
+        child.on('error', (err) => {
+            logger.error('Error with scaphandre')
+            reject(err)
+        })
+        resolve(child)
     })
-    return child
 }
 
 const stopComputeEnergicalComsuption = (packagePath, child, PID) => {
@@ -98,7 +94,7 @@ const stopComputeEnergicalComsuption = (packagePath, child, PID) => {
  * @param {String} packagePath : package folder
  */
 const installDep = async (packagePath) => {
-    const child = startComputeEnergicalComsuption(packagePath)
+    const child = await startComputeEnergicalComsuption(packagePath)
     logger.info('Installing dependencies ...')
     const res = await execCommand('npm install', {
         cwd: path.join(process.cwd(), 'repos', packagePath)
