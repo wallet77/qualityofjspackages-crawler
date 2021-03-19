@@ -1,6 +1,6 @@
 {
   "name": "qualityofjspackages-crawler",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Get most downloaded npm packages and run quality analysis",
   "main": "index.js",
   "bin": "./index.js",
