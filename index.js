@@ -121,7 +121,7 @@ const run = async () => {
     const packagesInError = Object.keys(skippedPackages)
     if (packagesInError.length > 0) {
         logger.error(`${packagesInError.length} packages skipped due to errors.`)
-        logger.error(Object.keys(skippedPackages).join('\n'))
+        logger.error(packagesInError.join('\n'))
     }
 
     const diff = process.hrtime(globalTime)
