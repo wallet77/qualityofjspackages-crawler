@@ -96,7 +96,7 @@ const stopComputeEnergicalComsuption = (packagePath, child, PID) => {
 const installDep = async (packagePath) => {
     const child = await startComputeEnergicalComsuption(packagePath)
     logger.info('Installing dependencies ...')
-    const res = await execCommand('npm install', {
+    const res = await execCommand('npm install --only=prod', {
         cwd: path.join(process.cwd(), 'repos', packagePath)
     })
     return await stopComputeEnergicalComsuption(packagePath, child, res.pid)
