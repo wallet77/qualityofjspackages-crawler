@@ -19,7 +19,7 @@ const run = async () => {
     const allPackages = {}
     const reposAlreadyCloned = []
 
-    const max = 108 // packages.length
+    const max = process.env.MAX_PACKAGES || packages.length
     // extract packages list
     for (let i = 0; i < max; i++) {
         const npmPackage = packages[i]
