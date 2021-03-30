@@ -3,9 +3,9 @@ const axios = require('axios')
 const fs = require('fs')
 const path = require('path')
 
-const rankPath = process.env.RANK_FILE || path.join(__dirname, '../report/rank_tmp.json');
+const rankPath = process.env.RANK_FILE || path.join(__dirname, '../report/rank_tmp.json')
 
-(async () => {
+module.exports = async () => {
     const allPackages = {}
     let savedPackages = {}
     try {
@@ -47,12 +47,10 @@ const rankPath = process.env.RANK_FILE || path.join(__dirname, '../report/rank_t
             })
             offset += 36
         }
-
-        console.log('Done')
     } catch (err) {
         console.log(err)
     }
 
-    await fs.promises.writeFile(process.env.OUTPUT_FILE || path.join(__dirname, '../report/input.json'), JSON.stringify(allPackages), 'utf8')
     await fs.promises.writeFile(rankPath, JSON.stringify(savedPackages), 'utf8')
-})()
+    return allPackages
+}
