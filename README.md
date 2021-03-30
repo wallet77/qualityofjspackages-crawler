@@ -22,6 +22,9 @@ Here is the current workflow:
     * run [Qualscan](https://github.com/wallet77/qualscan)
     * request [npms.io](https://www.npms.io) to get more data
 
+This crawler need an input file which contains the list of packages to crawl.  
+See section `Crawler input`.
+
 ## Overview
 
 ![Overview diagram](https://github.com/wallet77/qualityofjspackages-crawler/blob/main/doc/crawler_overview.png)
@@ -51,6 +54,16 @@ In any case all exporters should write in a JSON file with the following convent
         "name": "myModule2"
     }
 }
+```
+
+Run crawler like this (by default it uses npm):
+```bash
+node ./exporters/runExporter.js
+```
+
+To customize exporter:
+```bash
+EXPORTER=anvaka OUTPUT_FILE=/path/to/report/report.json node ./exporters/runExporter.js
 ```
 
 The only required field is the property `name` and it must be the name of the package in the npm registry.
