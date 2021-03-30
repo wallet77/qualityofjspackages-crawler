@@ -12,7 +12,7 @@ If you want to use scaphandre it should be install following the [official docum
 
 This project aims to crawl the top most famous Javascript packages and run some analysis on them.  
 Here is the current workflow:
-- download the list of the most dependend packages
+- download the list of the most dependend packages (multiple options, see section crawler input)
 - for each of them
     * request npm registry to retrieve global information
     * git clone the project from github
@@ -27,12 +27,33 @@ Here is the current workflow:
 ![Overview diagram](https://github.com/wallet77/qualityofjspackages-crawler/blob/main/doc/crawler_overview.png)
 
 
-### Details
+## Details
 
 Qualscan run with the following configuration:
 ```json
 
 ```
+
+## Crawler input
+
+Three possibilities:
+- use exporter for [anvaka rank list](https://gist.githubusercontent.com/anvaka/8e8fa57c7ee1350e3491/raw/b6f3ebeb34c53775eea00b489a0cea2edd9ee49c/01.most-dependent-upon.md)
+- use exporter for [npm most depended list](https://www.npmjs.com/browse/depended)
+- use your custom exporter (see examples in exporters directory)
+
+In any case all exporters should write in a JSON file with the following convention:
+```json
+{
+    "myModule": {
+        "name": "myModule"
+    },
+    "myModule2": {
+        "name": "myModule2"
+    }
+}
+```
+
+The only required field is the property `name` and it must be the name of the package in the npm registry.
 
 ## Project setup
 ```

@@ -5,6 +5,7 @@ const os = require('os')
 const store = require('./src/store')
 const { v4: uuidv4 } = require('uuid')
 const utils = require('./src/utils')
+const fs = require('fs')
 
 /**
  * Entrypoint
@@ -14,34 +15,11 @@ const run = async () => {
 
     const globalTime = process.hrtime()
     const id = uuidv4()
-    const res = await axios.get('https://gist.githubusercontent.com/anvaka/8e8fa57c7ee1350e3491/raw/b6f3ebeb34c53775eea00b489a0cea2edd9ee49c/01.most-dependent-upon.md')
-    const packages = res.data.split('\n')
-    const allPackages = {}
+
+    const rawdata = await fs.promises.readFile(process.env.LIST_PACKAGES_FILE || path.join(__dirname, './report/input.json'))
+    const allPackages = JSON.parse(rawdata)
+
     const reposAlreadyCloned = []
-
-    const max = process.env.MAX_PACKAGES || packages.length
-    // extract packages list
-    for (let i = 0; i < max; i++) {
-        const npmPackage = packages[i]
-
-        const name = npmPackage.substring(
-            npmPackage.lastIndexOf('[') + 1,
-            npmPackage.lastIndexOf(']')
-        )
-
-        if (name !== '') {
-            const rank = npmPackage.substring(
-                0,
-                npmPackage.indexOf('.')
-            )
-
-            allPackages[name] = {
-                name,
-                rank,
-                qualscan: {}
-            }
-        }
-    }
 
     const nbPackages = Object.keys(allPackages).length
     let nbPackageAlreadyDone = 0

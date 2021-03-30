@@ -1,28 +1,28 @@
 const cheerio = require('cheerio')
 const axios = require('axios')
-const axiosRetry = require('axios-retry')
 const fs = require('fs')
+const path = require('path')
 
-axiosRetry(axios, { retries: 10, retryDelay: () => { return 2000 } });
+const rankPath = process.env.RANK_FILE || path.join(__dirname, '../report/rank_tmp.json');
 
 (async () => {
-    let allPackages = {}
+    const allPackages = {}
+    let savedPackages = {}
     try {
-        const rawdata = await fs.promises.readFile(process.env.RANK_FILE)
-        allPackages = JSON.parse(rawdata)
+        const rawdata = await fs.promises.readFile(rankPath)
+        savedPackages = JSON.parse(rawdata)
 
         let offset = 0
 
         while (offset < 360) {
-            if (!allPackages[offset] || allPackages[offset].length === 0) {
+            if (!savedPackages[offset] || savedPackages[offset].length === 0) {
                 console.log(`https://www.npmjs.com/browse/depended?offset=${offset}`)
-                allPackages[offset] = []
+                savedPackages[offset] = []
                 try {
                     const res = await axios({
                         method: 'GET',
                         url: `browse/depended?offset=${offset}`,
                         baseURL: 'https://www.npmjs.com',
-                        timeout: 30000,
                         headers: {
                             Accept: 'text/html',
                             'Cache-Control': 'no-cache',
@@ -34,12 +34,17 @@ axiosRetry(axios, { retries: 10, retryDelay: () => { return 2000 } });
 
                     const $ = cheerio.load(res.data)
                     $('a h3').each(function () {
-                        allPackages[offset].push($(this).html())
+                        savedPackages[offset].push($(this).html())
                     })
                 } catch (err) {
-                    console.log(err)
+                    console.log(err.message)
                 }
             }
+            savedPackages[offset].forEach(value => {
+                allPackages[value] = {
+                    name: value
+                }
+            })
             offset += 36
         }
 
@@ -48,5 +53,6 @@ axiosRetry(axios, { retries: 10, retryDelay: () => { return 2000 } });
         console.log(err)
     }
 
-    await fs.promises.writeFile(process.env.RANK_FILE, JSON.stringify(allPackages), 'utf8')
+    await fs.promises.writeFile(process.env.OUTPUT_FILE || path.join(__dirname, '../report/input.json'), JSON.stringify(allPackages), 'utf8')
+    await fs.promises.writeFile(rankPath, JSON.stringify(savedPackages), 'utf8')
 })()
