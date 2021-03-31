@@ -32,10 +32,7 @@ See section `Crawler input`.
 
 ## Details
 
-Qualscan run with the following configuration:
-```json
-
-```
+Qualscan run with [the default configuration](https://github.com/wallet77/qualscan#budget).
 
 ## Crawler input
 
